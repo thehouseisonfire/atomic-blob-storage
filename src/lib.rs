@@ -115,6 +115,7 @@ use filesystem::{
     quarantine_blob, save_blob, save_blob_from_receiver,
 };
 #[cfg(windows)]
+#[allow(unused_imports)]
 use filesystem::{
     is_owned_temporary_filename, move_file, refresh_windows_clear_age, wide_path,
 };
