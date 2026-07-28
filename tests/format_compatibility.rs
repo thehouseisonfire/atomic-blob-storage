@@ -18,7 +18,7 @@ fn decode_hex(source: &str) -> Vec<u8> {
                 b'a'..=b'f' => value - b'a' + 10,
                 _ => panic!("fixture is lowercase hexadecimal"),
             };
-            digit(pair[0]) << 4 | digit(pair[1])
+            (digit(pair[0]) << 4) | digit(pair[1])
         })
         .collect()
 }
