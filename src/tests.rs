@@ -2140,15 +2140,23 @@ async fn maintenance_barriers_preserve_interleaved_fifo_submission_order() {
         second_maintenance,
         after_second
     );
+    // On Unix cleanup is unsupported; on Windows it is implemented and
+    // returns an empty report when no stale files exist.
+    #[cfg(unix)]
     assert!(matches!(
         first_result,
         Err(AtomicBlobStoreError::CleanupUnsupported { .. })
     ));
+    #[cfg(windows)]
+    first_result.unwrap();
     before_result.unwrap();
+    #[cfg(unix)]
     assert!(matches!(
         second_result,
         Err(AtomicBlobStoreError::CleanupUnsupported { .. })
     ));
+    #[cfg(windows)]
+    second_result.unwrap();
     after_result.unwrap();
 
     // M2 must not overtake B, and C must not overtake M2.
