@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-07-28
+
 - Lower the minimum supported Rust version from 1.89 to 1.85.
 
 ## [0.1.0] - 2026-07-27
