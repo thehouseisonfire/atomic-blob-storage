@@ -1,4 +1,4 @@
-use super::{Sender, Receiver, AtomicBlobStoreError, Read};
+use super::{AtomicBlobStoreError, Read, Receiver, Sender};
 #[cfg(any(unix, windows))]
 pub type WorkerJob = Box<dyn FnOnce() + Send + 'static>;
 

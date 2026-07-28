@@ -1,4 +1,4 @@
-use super::{Operation, Sender, BlockingResult, AtomicBlobStoreError, Duration, CleanupReport};
+use super::{AtomicBlobStoreError, BlockingResult, CleanupReport, Duration, Operation, Sender};
 
 #[cfg(any(unix, windows))]
 pub struct Submission {

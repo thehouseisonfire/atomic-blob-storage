@@ -82,7 +82,10 @@ pub use error::{
     EnvelopeSection, QuarantineInfo, StoreOperation,
 };
 mod engine;
-use engine::{EngineHandle, LoadStreamEndpoint, SaveStreamEndpoint, SaveStreamMessage, Pending, StoreConfig, emit_benchmark_event};
+use engine::{
+    EngineHandle, LoadStreamEndpoint, Pending, SaveStreamEndpoint, SaveStreamMessage, StoreConfig,
+    emit_benchmark_event,
+};
 #[cfg(any(unix, windows))]
 mod format;
 #[cfg(all(
@@ -100,7 +103,10 @@ use format::encode_envelope;
 #[cfg(any(unix, windows))]
 mod filesystem;
 #[cfg(any(unix, windows))]
-use filesystem::{save_blob, save_blob_from_receiver, clear_blob, inspect_blob, quarantine_blob, cleanup_stale_files, initialize_platform, ensure_namespace_available};
+use filesystem::{
+    cleanup_stale_files, clear_blob, ensure_namespace_available, initialize_platform, inspect_blob,
+    quarantine_blob, save_blob, save_blob_from_receiver,
+};
 #[cfg(any(unix, windows))]
 #[allow(unused_imports)]
 use format::{

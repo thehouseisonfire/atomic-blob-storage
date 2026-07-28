@@ -1,4 +1,4 @@
-use super::{Sender, SaveStreamMessage, Pending, Receiver, BlobMetadata};
+use super::{BlobMetadata, Pending, Receiver, SaveStreamMessage, Sender};
 pub struct SaveStreamEndpoint {
     pub(crate) chunks: Sender<SaveStreamMessage>,
     pub(crate) result: Pending<()>,

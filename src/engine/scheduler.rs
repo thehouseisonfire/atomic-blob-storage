@@ -1,4 +1,9 @@
-use super::{Receiver, CoordinatorEvent, deliver_error, AtomicBlobStoreError, Arc, StoreConfig, Mutex, Lifecycle, WorkerPool, HashMap, VecDeque, QueuedOperation, HashSet, PendingEvent, deliver, emit_benchmark_event, MaintenanceSubmission, MaintenanceCompletion, CleanupReport, cleanup_stale_files, run_owned_operation, Completion};
+use super::{
+    Arc, AtomicBlobStoreError, CleanupReport, Completion, CoordinatorEvent, HashMap, HashSet,
+    Lifecycle, MaintenanceCompletion, MaintenanceSubmission, Mutex, PendingEvent, QueuedOperation,
+    Receiver, StoreConfig, VecDeque, WorkerPool, cleanup_stale_files, deliver, deliver_error,
+    emit_benchmark_event, run_owned_operation,
+};
 
 #[cfg(any(unix, windows))]
 pub fn fail_queued_after_coordinator_panic(receiver: &Receiver<CoordinatorEvent>) {

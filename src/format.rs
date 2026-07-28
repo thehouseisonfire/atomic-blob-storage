@@ -1,4 +1,9 @@
-use super::{BlobFormatIdentity, AtomicBlobStoreError, HEADER_LEN, CHECKSUM_LEN, DOMAIN_TAG_LEN, StoreConfig, Write, Receiver, SaveStreamMessage, StoreOperation, emit_benchmark_event, Path, io, ensure_namespace_available, Sender, BlobMetadata, Seek, SeekFrom, STREAM_CHUNK_SIZE, EnvelopeSection, Read};
+use super::{
+    AtomicBlobStoreError, BlobFormatIdentity, BlobMetadata, CHECKSUM_LEN, DOMAIN_TAG_LEN,
+    EnvelopeSection, HEADER_LEN, Path, Read, Receiver, STREAM_CHUNK_SIZE, SaveStreamMessage, Seek,
+    SeekFrom, Sender, StoreConfig, StoreOperation, Write, emit_benchmark_event,
+    ensure_namespace_available, io,
+};
 #[cfg(any(unix, windows))]
 #[cfg_attr(
     not(any(

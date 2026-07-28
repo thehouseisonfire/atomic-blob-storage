@@ -1,15 +1,25 @@
-use super::{Sender, AtomicBlobStoreError, Duration, CleanupReport, Receiver, BlobMetadata, BlobInspection, QuarantineInfo, Path, load_blob, load_blob_into_sender, Read, save_blob, save_blob_from_receiver, clear_blob, inspect_blob, quarantine_blob, Arc, Mutex, HashMap, VecDeque, HashSet, cleanup_stale_files, PathBuf, BlobFormatIdentity, OsStr, AtomicBlobStoreOptions, validate_namespace, initialize_platform, StoreOperation, key_hash, STREAM_CHANNEL_CAPACITY, blob_filename, HEADER_LEN, CHECKSUM_LEN, AtomicBlobStoreConfigError};
+use super::{
+    Arc, AtomicBlobStoreConfigError, AtomicBlobStoreError, AtomicBlobStoreOptions,
+    BlobFormatIdentity, BlobInspection, BlobMetadata, CHECKSUM_LEN, CleanupReport, Duration,
+    HEADER_LEN, HashMap, HashSet, Mutex, OsStr, Path, PathBuf, QuarantineInfo, Read, Receiver,
+    STREAM_CHANNEL_CAPACITY, Sender, StoreOperation, VecDeque, blob_filename, cleanup_stale_files,
+    clear_blob, initialize_platform, inspect_blob, key_hash, load_blob, load_blob_into_sender,
+    quarantine_blob, save_blob, save_blob_from_receiver, validate_namespace,
+};
 
 #[cfg(any(unix, windows))]
 mod event;
 #[cfg(any(unix, windows))]
-use event::{CoordinatorEvent, QueuedOperation, PendingEvent, MaintenanceSubmission, MaintenanceCompletion, Completion, CloseSubmission, Submission};
+use event::{
+    CloseSubmission, Completion, CoordinatorEvent, MaintenanceCompletion, MaintenanceSubmission,
+    PendingEvent, QueuedOperation, Submission,
+};
 mod lifecycle;
 pub use lifecycle::Lifecycle;
 mod operation;
 pub use operation::SaveStreamMessage;
 #[cfg(any(unix, windows))]
-use operation::{Operation, BlockingResult, deliver_error, deliver, run_owned_operation};
+use operation::{BlockingResult, Operation, deliver, deliver_error, run_owned_operation};
 #[cfg(any(unix, windows))]
 mod scheduler;
 #[cfg(any(unix, windows))]
@@ -138,7 +148,9 @@ impl CoordinatorJoin {
         &mut self,
         result: Result<(), AtomicBlobStoreError>,
     ) -> Result<(), AtomicBlobStoreError> {
-        let outcome = if let Some(outcome) = self.outcome { outcome } else {
+        let outcome = if let Some(outcome) = self.outcome {
+            outcome
+        } else {
             let handle = self
                 .handle
                 .take()

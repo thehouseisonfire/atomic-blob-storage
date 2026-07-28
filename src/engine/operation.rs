@@ -1,5 +1,9 @@
 #[allow(unused_imports)]
-use super::{Sender, AtomicBlobStoreError, Receiver, BlobMetadata, BlobInspection, QuarantineInfo, StoreConfig, Path, load_blob, load_blob_into_sender, Read, save_blob, save_blob_from_receiver, clear_blob, inspect_blob, quarantine_blob};
+use super::{
+    AtomicBlobStoreError, BlobInspection, BlobMetadata, Path, QuarantineInfo, Read, Receiver,
+    Sender, StoreConfig, clear_blob, inspect_blob, load_blob, load_blob_into_sender,
+    quarantine_blob, save_blob, save_blob_from_receiver,
+};
 #[cfg(any(unix, windows))]
 pub enum Operation {
     Load {
