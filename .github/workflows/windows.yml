@@ -28,7 +28,7 @@ jobs:
       ATOMIC_BLOB_PACKAGE_EVIDENCE_DIR: ${{ github.workspace }}/windows-validation/package
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -154,7 +154,7 @@ jobs:
 
       - name: Upload native Windows validation evidence
         if: ${{ always() }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: atomic-blob-store-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: windows-validation/
