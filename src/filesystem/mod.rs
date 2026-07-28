@@ -1,16 +1,16 @@
+#[cfg(windows)]
+use super::CleanupFailure;
+#[cfg(all(test, any(unix, windows)))]
+use super::engine::{TestStage, hit_test_stage};
 #[cfg(any(not(test), windows))]
 use super::envelope_parts;
+#[cfg(all(test, unix))]
+use super::format;
 use super::{
     AtomicBlobStoreError, BlobFormatIdentity, BlobInspection, BlobState, CleanupReport, Duration,
     OsStr, Path, PathBuf, QuarantineInfo, Receiver, SaveStreamMessage, StoreConfig, StoreOperation,
     envelope_header, io, write_stream_envelope,
 };
-#[cfg(windows)]
-use super::CleanupFailure;
-#[cfg(all(test, any(unix, windows)))]
-use super::engine::{TestStage, hit_test_stage};
-#[cfg(all(test, unix))]
-use super::format;
 #[cfg(windows)]
 use std::time::SystemTime;
 #[cfg(any(unix, windows))]
@@ -1045,6 +1045,12 @@ pub(crate) fn cleanup_stale_files(
     config: &StoreConfig,
     minimum_age: Duration,
 ) -> Result<CleanupReport, AtomicBlobStoreError> {
+    #[cfg(test)]
+    hit_test_stage(
+        config,
+        TestStage::BeforeCleanup,
+        StoreOperation::EnumerateTemporaryFiles,
+    )?;
     let now = SystemTime::now();
     let mut report = CleanupReport::default();
     let entries =
