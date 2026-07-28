@@ -2752,12 +2752,20 @@ async fn blocked_cancelled_work_keeps_same_key_order_but_not_other_keys() {
 #[cfg(any(unix, windows))]
 #[tokio::test]
 async fn cloned_handles_and_many_transient_keys_remain_operational() {
+    // Windows synced filesystem operations are significantly slower; fewer
+    // iterations keep the test within the nextest timeout budget while
+    // exercising the same cloned-handle and registry-cleanup invariants.
+    #[cfg(windows)]
+    const TRANSIENT_KEY_CYCLES: u32 = 200;
+    #[cfg(not(windows))]
+    const TRANSIENT_KEY_CYCLES: u32 = 2_000;
+
     let root = test_directory();
     let store = AtomicBlobStore::open(root.path(), "v4", options())
         .await
         .unwrap();
     let clone = store.clone();
-    for index in 0_u32..2_000 {
+    for index in 0_u32..TRANSIENT_KEY_CYCLES {
         let key = index.to_be_bytes();
         let operation = clone.save(&key, key.to_vec());
         operation.await.unwrap();
