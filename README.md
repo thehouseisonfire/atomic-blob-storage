@@ -1,4 +1,17 @@
-# atomic-blob-store
+<div align="center">
+  <img alt="atomic-blob-store logo" src="docs/atomic-blob-store.png" width="60%" />
+</div>
+
+<div align="center">
+  <a href="https://crates.io/crates/atomic-blob-store">
+    <img src="https://img.shields.io/crates/v/atomic-blob-store.svg" alt="crates.io version" />
+  </a>
+  <a href="https://crates.io/crates/atomic-blob-store">
+    <img src="https://img.shields.io/crates/d/atomic-blob-store.svg" alt="crates.io downloads" />
+  </a>
+  <img src="https://img.shields.io/badge/rustc-1.89%2B-blue" alt="rustc 1.89 or newer" />
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="Apache-2.0 license" /></a>
+</div>
 
 `atomic-blob-store` saves one size-limited byte blob per opaque key on a trusted
 local Unix or Windows filesystem. It supports atomic streaming save, validated
