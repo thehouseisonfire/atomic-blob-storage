@@ -1475,8 +1475,8 @@ async fn windows_cleanup_classifies_owned_names_ages_and_mixed_failures() {
             .map(|failure| failure.identifier.as_str())
             .collect::<Vec<_>>(),
         vec![
-            metadata_failure.file_name().unwrap().to_string_lossy(),
             removal_failure.file_name().unwrap().to_string_lossy(),
+            metadata_failure.file_name().unwrap().to_string_lossy(),
         ]
     );
     for name in malformed {
