@@ -22,7 +22,7 @@ This crate is not a database, queue, object service, log, cache-coherence
 protocol, or multi-process coordination mechanism.
 
 The crate is maintained at
-<https://github.com/thehouseisonfire/atomic-blob-storage>. The default build is
+<https://github.com/thehouseisonfire/atomic-blob-store>. The default build is
 blocking and Tokio-free; enable the optional `tokio` feature for the async
 facade.
 
