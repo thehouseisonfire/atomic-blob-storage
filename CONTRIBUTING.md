@@ -12,4 +12,4 @@ Changes to the V1 envelope require explicit compatibility review and updated
 immutable fixtures. Native filesystem claims require evidence from the
 corresponding native platform.
 
-Contributions are licensed under the Apache License, Version 2.0.
+Contributions are dual-licensed under MIT OR Apache-2.0, matching the project license.
