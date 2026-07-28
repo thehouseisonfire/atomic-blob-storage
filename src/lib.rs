@@ -92,7 +92,10 @@ mod format;
 use format::decode_reader;
 #[cfg(all(test, feature = "tokio", any(unix, windows)))]
 use format::decode_reader_with_usize_limit;
-#[cfg(all(any(unix, windows), any(test, feature = "bench-instrumentation")))]
+#[cfg(all(
+    any(unix, windows),
+    any(feature = "bench-instrumentation", all(test, feature = "tokio"))
+))]
 use format::encode_envelope;
 #[cfg(any(unix, windows))]
 mod filesystem;

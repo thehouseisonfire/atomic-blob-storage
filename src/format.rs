@@ -1,6 +1,12 @@
 use super::*;
 #[cfg(any(unix, windows))]
-#[cfg_attr(not(any(test, feature = "bench-instrumentation")), allow(dead_code))]
+#[cfg_attr(
+    not(any(
+        feature = "bench-instrumentation",
+        all(test, any(unix, feature = "tokio"))
+    )),
+    allow(dead_code)
+)]
 pub(crate) fn encode_envelope(
     format: &BlobFormatIdentity,
     payload: &[u8],

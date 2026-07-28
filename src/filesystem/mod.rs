@@ -111,7 +111,7 @@ pub(crate) fn save_blob(
         StoreOperation::WriteEnvelope,
     )?;
     #[cfg(test)]
-    let envelope = encode_envelope(&config.format, payload, config.maximum)?;
+    let envelope = format::encode_envelope(&config.format, payload, config.maximum)?;
     #[cfg(not(test))]
     let (header, checksum) = envelope_parts(&config.format, payload, config.maximum)?;
     #[cfg(all(test, unix))]
