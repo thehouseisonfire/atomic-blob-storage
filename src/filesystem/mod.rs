@@ -5,11 +5,12 @@ use super::{
     OsStr, Path, PathBuf, QuarantineInfo, Receiver, SaveStreamMessage, StoreConfig, StoreOperation,
     envelope_header, io, write_stream_envelope,
 };
+#[cfg(windows)]
+use super::CleanupFailure;
 #[cfg(all(test, any(unix, windows)))]
-use super::{
-    engine::{TestStage, hit_test_stage},
-    format,
-};
+use super::engine::{TestStage, hit_test_stage};
+#[cfg(all(test, unix))]
+use super::format;
 #[cfg(windows)]
 use std::time::SystemTime;
 #[cfg(any(unix, windows))]

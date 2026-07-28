@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-07-28
+
+- Fix Windows-only compilation errors: import `CleanupFailure` and gate `format` module import to unix tests.
+
 ## [0.1.1] - 2026-07-28
 
 - Lower the minimum supported Rust version from 1.89 to 1.85.
