@@ -4,7 +4,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 
 static ARTIFACT_SEQUENCE: AtomicUsize = AtomicUsize::new(0);
 
-pub(crate) struct TestDirectory {
+pub struct TestDirectory {
     inner: tempfile::TempDir,
 }
 
@@ -42,7 +42,7 @@ impl Drop for TestDirectory {
     }
 }
 
-pub(crate) fn test_directory() -> TestDirectory {
+pub fn test_directory() -> TestDirectory {
     TestDirectory {
         inner: tempfile::tempdir().expect("create test directory"),
     }

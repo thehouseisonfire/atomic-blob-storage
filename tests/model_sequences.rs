@@ -142,7 +142,7 @@ impl ModelStore for TokioModelStore {
 struct Generator(u64);
 
 impl Generator {
-    fn next(&mut self) -> u64 {
+    const fn next(&mut self) -> u64 {
         self.0 ^= self.0 << 13;
         self.0 ^= self.0 >> 7;
         self.0 ^= self.0 << 17;
@@ -226,19 +226,17 @@ fn run_model(mut store: impl ModelStore, seed: u64, operation_count: usize) {
 fn configured_cases() -> (usize, u64) {
     let cases = std::env::var("ATOMIC_BLOB_MODEL_CASES")
         .ok()
-        .map(|value| {
+        .map_or(DEFAULT_CASES, |value| {
             value
                 .parse()
                 .expect("ATOMIC_BLOB_MODEL_CASES must be an integer")
-        })
-        .unwrap_or(DEFAULT_CASES);
+        });
     let seed = std::env::var("ATOMIC_BLOB_MODEL_SEED")
         .ok()
-        .map(|value| {
+        .map_or(DEFAULT_SEED, |value| {
             let value = value.trim_start_matches("0x");
             u64::from_str_radix(value, 16).expect("ATOMIC_BLOB_MODEL_SEED must be hexadecimal")
-        })
-        .unwrap_or(DEFAULT_SEED);
+        });
     (cases, seed)
 }
 

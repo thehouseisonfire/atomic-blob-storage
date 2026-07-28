@@ -37,7 +37,7 @@ struct ScriptObservation {
 }
 
 #[cfg(feature = "tokio")]
-fn error_category(error: &AtomicBlobStoreError) -> &'static str {
+const fn error_category(error: &AtomicBlobStoreError) -> &'static str {
     match error {
         AtomicBlobStoreError::InputEndedEarly { .. } => "input-ended-early",
         AtomicBlobStoreError::InputHasTrailingData { .. } => "input-has-trailing-data",
@@ -112,7 +112,7 @@ struct ScriptedReader {
 }
 
 impl ScriptedReader {
-    fn new(bytes: Vec<u8>, fail_at: Option<usize>) -> Self {
+    const fn new(bytes: Vec<u8>, fail_at: Option<usize>) -> Self {
         Self {
             bytes,
             position: 0,

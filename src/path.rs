@@ -14,11 +14,11 @@ pub fn blob_filename(format: &BlobFormatIdentity, canonical_key: &[u8]) -> Strin
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn key_hash(canonical_key: &[u8]) -> [u8; 32] {
+pub fn key_hash(canonical_key: &[u8]) -> [u8; 32] {
     *blake3::hash(canonical_key).as_bytes()
 }
 
-pub(crate) fn validate_namespace(namespace: &OsStr) -> Result<PathBuf, AtomicBlobStoreError> {
+pub fn validate_namespace(namespace: &OsStr) -> Result<PathBuf, AtomicBlobStoreError> {
     let path = Path::new(namespace);
     let mut components = path.components();
     match (components.next(), components.next()) {

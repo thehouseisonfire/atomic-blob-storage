@@ -1,31 +1,31 @@
-use super::*;
+use super::{Sender, AtomicBlobStoreError, Duration, CleanupReport, Receiver, BlobMetadata, BlobInspection, QuarantineInfo, Path, load_blob, load_blob_into_sender, Read, save_blob, save_blob_from_receiver, clear_blob, inspect_blob, quarantine_blob, Arc, Mutex, HashMap, VecDeque, HashSet, cleanup_stale_files, PathBuf, BlobFormatIdentity, OsStr, AtomicBlobStoreOptions, validate_namespace, initialize_platform, StoreOperation, key_hash, STREAM_CHANNEL_CAPACITY, blob_filename, HEADER_LEN, CHECKSUM_LEN, AtomicBlobStoreConfigError};
 
 #[cfg(any(unix, windows))]
 mod event;
 #[cfg(any(unix, windows))]
-use event::*;
+use event::{CoordinatorEvent, QueuedOperation, PendingEvent, MaintenanceSubmission, MaintenanceCompletion, Completion, CloseSubmission, Submission};
 mod lifecycle;
-pub(crate) use lifecycle::Lifecycle;
+pub use lifecycle::Lifecycle;
 mod operation;
-pub(crate) use operation::SaveStreamMessage;
+pub use operation::SaveStreamMessage;
 #[cfg(any(unix, windows))]
-use operation::*;
+use operation::{Operation, BlockingResult, deliver_error, deliver, run_owned_operation};
 #[cfg(any(unix, windows))]
 mod scheduler;
 #[cfg(any(unix, windows))]
 use scheduler::{fail_queued_after_coordinator_panic, run_scheduler};
 mod stream;
-pub(crate) use stream::{LoadStreamEndpoint, SaveStreamEndpoint};
+pub use stream::{LoadStreamEndpoint, SaveStreamEndpoint};
 #[cfg(any(unix, windows))]
 mod workers;
 #[cfg(any(unix, windows))]
-use workers::*;
+use workers::WorkerPool;
 
 type PendingCompletion<T> = Box<
     dyn FnOnce(Option<Result<T, AtomicBlobStoreError>>) -> Result<T, AtomicBlobStoreError> + Send,
 >;
 
-pub(crate) struct Pending<T> {
+pub struct Pending<T> {
     receiver: Receiver<Result<T, AtomicBlobStoreError>>,
     completion: PendingCompletion<T>,
 }
@@ -80,7 +80,7 @@ impl<T: Send + 'static> Pending<T> {
 }
 
 #[derive(Clone)]
-pub(crate) struct EngineHandle {
+pub struct EngineHandle {
     pub(crate) inner: Arc<Inner>,
 }
 
@@ -100,7 +100,7 @@ impl std::fmt::Debug for EngineHandle {
     }
 }
 
-pub(crate) struct Inner {
+pub struct Inner {
     pub(crate) config: Arc<StoreConfig>,
     #[cfg(any(unix, windows))]
     pub(crate) submissions: Sender<CoordinatorEvent>,
@@ -113,7 +113,7 @@ pub(crate) struct Inner {
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) struct CoordinatorJoin {
+pub struct CoordinatorJoin {
     handle: Option<std::thread::JoinHandle<()>>,
     outcome: Option<CoordinatorJoinOutcome>,
 }
@@ -127,7 +127,7 @@ enum CoordinatorJoinOutcome {
 
 #[cfg(any(unix, windows))]
 impl CoordinatorJoin {
-    fn new(handle: std::thread::JoinHandle<()>) -> Self {
+    const fn new(handle: std::thread::JoinHandle<()>) -> Self {
         Self {
             handle: Some(handle),
             outcome: None,
@@ -138,21 +138,18 @@ impl CoordinatorJoin {
         &mut self,
         result: Result<(), AtomicBlobStoreError>,
     ) -> Result<(), AtomicBlobStoreError> {
-        let outcome = match self.outcome {
-            Some(outcome) => outcome,
-            None => {
-                let handle = self
-                    .handle
-                    .take()
-                    .expect("an unfinished coordinator has a join handle");
-                let outcome = if handle.join().is_ok() {
-                    CoordinatorJoinOutcome::Joined
-                } else {
-                    CoordinatorJoinOutcome::Panicked
-                };
-                self.outcome = Some(outcome);
-                outcome
-            }
+        let outcome = if let Some(outcome) = self.outcome { outcome } else {
+            let handle = self
+                .handle
+                .take()
+                .expect("an unfinished coordinator has a join handle");
+            let outcome = if handle.join().is_ok() {
+                CoordinatorJoinOutcome::Joined
+            } else {
+                CoordinatorJoinOutcome::Panicked
+            };
+            self.outcome = Some(outcome);
+            outcome
         };
         match outcome {
             CoordinatorJoinOutcome::Joined => result,
@@ -161,7 +158,7 @@ impl CoordinatorJoin {
     }
 }
 
-pub(crate) struct StoreConfig {
+pub struct StoreConfig {
     pub(crate) namespace: PathBuf,
     pub(crate) format: BlobFormatIdentity,
     pub(crate) maximum: u64,
@@ -748,7 +745,7 @@ impl EngineHandle {
     }
 }
 
-pub(crate) fn validate_maximum(maximum: u64) -> Result<(), AtomicBlobStoreError> {
+pub fn validate_maximum(maximum: u64) -> Result<(), AtomicBlobStoreError> {
     let overhead =
         u64::try_from(HEADER_LEN + CHECKSUM_LEN).expect("the fixed envelope overhead fits in u64");
     if maximum.checked_add(overhead).is_none() {
@@ -765,7 +762,7 @@ pub(crate) fn unsupported_future<T: Send + 'static>() -> Pending<T> {
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn submit<T: Send + 'static>(
+pub fn submit<T: Send + 'static>(
     submissions: &Sender<CoordinatorEvent>,
     lifecycle: &Mutex<Lifecycle>,
     key_hash: [u8; 32],
@@ -797,7 +794,7 @@ pub(crate) fn submit<T: Send + 'static>(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn submit_operation(
+pub fn submit_operation(
     submissions: &Sender<CoordinatorEvent>,
     lifecycle: &Mutex<Lifecycle>,
     key_hash: [u8; 32],
@@ -865,7 +862,7 @@ pub(crate) fn hit_test_stage(
 }
 
 #[cfg(all(feature = "bench-instrumentation", any(unix, windows)))]
-pub(crate) fn emit_benchmark_event(
+pub fn emit_benchmark_event(
     config: &StoreConfig,
     event: crate::bench_instrumentation::BenchmarkEvent,
 ) {

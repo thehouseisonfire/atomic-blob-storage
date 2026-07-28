@@ -1,8 +1,8 @@
-use super::*;
+use super::{PathBuf, BlobFormatIdentity, StoreConfig, AtomicBlobStoreError, StoreOperation, io, Path, envelope_parts, Write, Receiver, SaveStreamMessage, envelope_header, write_stream_envelope, BlobInspection, BlobState, QuarantineInfo, OsStr, Duration, CleanupReport};
 #[cfg(windows)]
 use std::time::SystemTime;
 #[cfg(any(unix, windows))]
-pub(crate) fn initialize_platform(
+pub fn initialize_platform(
     mut root: PathBuf,
     namespace_component: PathBuf,
     format: BlobFormatIdentity,
@@ -83,7 +83,7 @@ pub(crate) fn initialize_platform(
     })
 }
 #[cfg(any(unix, windows))]
-pub(crate) fn ensure_namespace_available(config: &StoreConfig) -> Result<(), AtomicBlobStoreError> {
+pub fn ensure_namespace_available(config: &StoreConfig) -> Result<(), AtomicBlobStoreError> {
     match std::fs::metadata(&config.namespace) {
         Ok(metadata) if metadata.is_dir() => Ok(()),
         Ok(_) => Err(AtomicBlobStoreError::NamespacePathIsNotDirectory),
@@ -95,7 +95,7 @@ pub(crate) fn ensure_namespace_available(config: &StoreConfig) -> Result<(), Ato
 }
 
 #[cfg(unix)]
-pub(crate) fn save_blob(
+pub fn save_blob(
     config: &StoreConfig,
     path: &Path,
     payload: &[u8],
@@ -193,7 +193,7 @@ pub(crate) fn save_blob(
 }
 
 #[cfg(unix)]
-pub(crate) fn save_blob_from_receiver(
+pub fn save_blob_from_receiver(
     config: &StoreConfig,
     path: &Path,
     declared_len: u64,
@@ -261,7 +261,7 @@ pub(crate) fn save_blob_from_receiver(
 }
 
 #[cfg(unix)]
-pub(crate) fn clear_blob(config: &StoreConfig, path: &Path) -> Result<(), AtomicBlobStoreError> {
+pub fn clear_blob(config: &StoreConfig, path: &Path) -> Result<(), AtomicBlobStoreError> {
     #[cfg(all(test, unix))]
     hit_test_stage(config, TestStage::BeforeRemove, StoreOperation::RemoveBlob)?;
     match std::fs::remove_file(path) {
@@ -296,7 +296,7 @@ pub(crate) fn clear_blob(config: &StoreConfig, path: &Path) -> Result<(), Atomic
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn inspect_blob(
+pub fn inspect_blob(
     config: &StoreConfig,
     path: &Path,
 ) -> Result<BlobInspection, AtomicBlobStoreError> {
@@ -323,7 +323,7 @@ pub(crate) fn inspect_blob(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn random_identifier() -> Result<String, AtomicBlobStoreError> {
+pub fn random_identifier() -> Result<String, AtomicBlobStoreError> {
     const HEX_DIGITS: &[u8; 16] = b"0123456789abcdef";
 
     let mut bytes = [0_u8; 32];
@@ -338,7 +338,7 @@ pub(crate) fn random_identifier() -> Result<String, AtomicBlobStoreError> {
 }
 
 #[cfg(unix)]
-pub(crate) fn quarantine_blob(
+pub fn quarantine_blob(
     config: &StoreConfig,
     path: &Path,
 ) -> Result<QuarantineInfo, AtomicBlobStoreError> {
@@ -382,7 +382,7 @@ pub(crate) fn quarantine_blob(
 }
 
 #[cfg(unix)]
-pub(crate) fn sync_quarantine_namespace(
+pub fn sync_quarantine_namespace(
     config: &StoreConfig,
     quarantine: &QuarantineInfo,
 ) -> Result<(), AtomicBlobStoreError> {
@@ -423,7 +423,7 @@ pub(crate) fn sync_quarantine_namespace(
 
 #[cfg(unix)]
 #[allow(clippy::missing_const_for_fn)]
-pub(crate) fn cleanup_stale_files(
+pub fn cleanup_stale_files(
     config: &StoreConfig,
     _minimum_age: Duration,
 ) -> Result<CleanupReport, AtomicBlobStoreError> {
@@ -1128,7 +1128,7 @@ pub(crate) fn is_owned_temporary_filename(name: &str, suffix: &str) -> bool {
 }
 
 #[cfg(unix)]
-pub(crate) fn sync_directory(
+pub fn sync_directory(
     path: &Path,
     open_operation: StoreOperation,
     sync_operation: StoreOperation,

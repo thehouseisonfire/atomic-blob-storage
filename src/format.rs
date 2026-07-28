@@ -1,4 +1,4 @@
-use super::*;
+use super::{BlobFormatIdentity, AtomicBlobStoreError, HEADER_LEN, CHECKSUM_LEN, DOMAIN_TAG_LEN, StoreConfig, Write, Receiver, SaveStreamMessage, StoreOperation, emit_benchmark_event, Path, io, ensure_namespace_available, Sender, BlobMetadata, Seek, SeekFrom, STREAM_CHUNK_SIZE, EnvelopeSection, Read};
 #[cfg(any(unix, windows))]
 #[cfg_attr(
     not(any(
@@ -7,7 +7,7 @@ use super::*;
     )),
     allow(dead_code)
 )]
-pub(crate) fn encode_envelope(
+pub fn encode_envelope(
     format: &BlobFormatIdentity,
     payload: &[u8],
     maximum: u64,
@@ -21,7 +21,7 @@ pub(crate) fn encode_envelope(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn envelope_parts(
+pub fn envelope_parts(
     format: &BlobFormatIdentity,
     payload: &[u8],
     maximum: u64,
@@ -34,7 +34,7 @@ pub(crate) fn envelope_parts(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn envelope_header(
+pub fn envelope_header(
     format: &BlobFormatIdentity,
     size: u64,
     maximum: u64,
@@ -51,7 +51,7 @@ pub(crate) fn envelope_header(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn write_stream_envelope(
+pub fn write_stream_envelope(
     config: &StoreConfig,
     writer: &mut impl Write,
     declared_len: u64,
@@ -66,23 +66,17 @@ pub(crate) fn write_stream_envelope(
         })?;
     let mut checksum = crc32c::crc32c(&header);
     let mut written = 0_u64;
-    #[cfg(feature = "bench-instrumentation")]
-    let mut input_starvation_reported = false;
     #[cfg(all(test, any(unix, windows)))]
     let mut during_write_hook_hit = false;
 
-    loop {
-        #[cfg(feature = "bench-instrumentation")]
-        if !input_starvation_reported && chunks.is_empty() {
-            emit_benchmark_event(
-                config,
-                crate::bench_instrumentation::BenchmarkEvent::SaveStreamInputStarved,
-            );
-            input_starvation_reported = true;
-        }
-        let Ok(message) = chunks.recv() else {
-            break;
-        };
+    #[cfg(feature = "bench-instrumentation")]
+    if chunks.is_empty() {
+        emit_benchmark_event(
+            config,
+            crate::bench_instrumentation::BenchmarkEvent::SaveStreamInputStarved,
+        );
+    }
+    while let Ok(message) = chunks.recv() {
         match message {
             SaveStreamMessage::Chunk(chunk) => {
                 let count = u64::try_from(chunk.len()).expect("a chunk length always fits in u64");
@@ -136,7 +130,7 @@ pub(crate) fn write_stream_envelope(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn load_blob(
+pub fn load_blob(
     config: &StoreConfig,
     path: &Path,
 ) -> Result<Option<Vec<u8>>, AtomicBlobStoreError> {
@@ -157,7 +151,7 @@ pub(crate) fn load_blob(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn load_blob_into_sender(
+pub fn load_blob_into_sender(
     config: &StoreConfig,
     path: &Path,
     chunks: Sender<Vec<u8>>,
@@ -215,7 +209,7 @@ pub(crate) fn load_blob_into_sender(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn validate_envelope_reader(
+pub fn validate_envelope_reader(
     format: &BlobFormatIdentity,
     reader: &mut impl Read,
     maximum: u64,
@@ -302,7 +296,7 @@ pub(crate) fn validate_envelope_reader(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn decode_reader(
+pub fn decode_reader(
     format: &BlobFormatIdentity,
     reader: &mut impl Read,
     maximum: u64,
@@ -311,7 +305,7 @@ pub(crate) fn decode_reader(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn decode_reader_with_usize_limit(
+pub fn decode_reader_with_usize_limit(
     format: &BlobFormatIdentity,
     reader: &mut impl Read,
     maximum: u64,
@@ -379,7 +373,7 @@ pub(crate) fn decode_reader_with_usize_limit(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn read_section(
+pub fn read_section(
     reader: &mut impl Read,
     bytes: &mut [u8],
     section: EnvelopeSection,

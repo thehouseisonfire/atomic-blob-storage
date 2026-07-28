@@ -1,7 +1,7 @@
-use super::*;
+use super::{Receiver, CoordinatorEvent, deliver_error, AtomicBlobStoreError, Arc, StoreConfig, Mutex, Lifecycle, WorkerPool, HashMap, VecDeque, QueuedOperation, HashSet, PendingEvent, deliver, emit_benchmark_event, MaintenanceSubmission, MaintenanceCompletion, CleanupReport, cleanup_stale_files, run_owned_operation, Completion};
 
 #[cfg(any(unix, windows))]
-pub(crate) fn fail_queued_after_coordinator_panic(receiver: &Receiver<CoordinatorEvent>) {
+pub fn fail_queued_after_coordinator_panic(receiver: &Receiver<CoordinatorEvent>) {
     while let Ok(event) = receiver.try_recv() {
         match event {
             CoordinatorEvent::Submission(submission) => {
@@ -36,7 +36,7 @@ pub(crate) fn fail_queued_after_coordinator_panic(receiver: &Receiver<Coordinato
 
 #[cfg(any(unix, windows))]
 #[allow(clippy::too_many_lines)]
-pub(crate) fn run_scheduler(
+pub fn run_scheduler(
     config: &Arc<StoreConfig>,
     receiver: &Receiver<CoordinatorEvent>,
     lifecycle: &Arc<Mutex<Lifecycle>>,
@@ -273,7 +273,7 @@ pub(crate) fn run_scheduler(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn advance_pending_if_ready(
+pub fn advance_pending_if_ready(
     config: &Arc<StoreConfig>,
     queues: &mut HashMap<[u8; 32], VecDeque<QueuedOperation>>,
     active: &mut HashSet<[u8; 32]>,
@@ -335,7 +335,7 @@ pub(crate) fn advance_pending_if_ready(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn dispatch_maintenance(
+pub fn dispatch_maintenance(
     config: &Arc<StoreConfig>,
     submission: MaintenanceSubmission,
     worker_pool: &mut WorkerPool,
@@ -393,7 +393,7 @@ pub(crate) fn dispatch_maintenance(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn dispatch_if_idle(
+pub fn dispatch_if_idle(
     key_hash: [u8; 32],
     config: &Arc<StoreConfig>,
     queues: &mut HashMap<[u8; 32], VecDeque<QueuedOperation>>,
@@ -461,7 +461,7 @@ pub(crate) fn dispatch_if_idle(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn dispatch_available(
+pub fn dispatch_available(
     config: &Arc<StoreConfig>,
     queues: &mut HashMap<[u8; 32], VecDeque<QueuedOperation>>,
     active: &mut HashSet<[u8; 32]>,

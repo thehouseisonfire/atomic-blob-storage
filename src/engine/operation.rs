@@ -1,7 +1,7 @@
 #[allow(unused_imports)]
-use super::*;
+use super::{Sender, AtomicBlobStoreError, Receiver, BlobMetadata, BlobInspection, QuarantineInfo, StoreConfig, Path, load_blob, load_blob_into_sender, Read, save_blob, save_blob_from_receiver, clear_blob, inspect_blob, quarantine_blob};
 #[cfg(any(unix, windows))]
-pub(crate) enum Operation {
+pub enum Operation {
     Load {
         sender: Sender<Result<Option<Vec<u8>>, AtomicBlobStoreError>>,
     },
@@ -31,7 +31,7 @@ pub(crate) enum Operation {
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) enum BlockingResult {
+pub enum BlockingResult {
     Load(Result<Option<Vec<u8>>, AtomicBlobStoreError>),
     LoadStream(Result<Option<BlobMetadata>, AtomicBlobStoreError>),
     Save(Result<(), AtomicBlobStoreError>),
@@ -42,13 +42,13 @@ pub(crate) enum BlockingResult {
 }
 
 #[cfg_attr(not(any(unix, windows)), allow(dead_code))]
-pub(crate) enum SaveStreamMessage {
+pub enum SaveStreamMessage {
     Chunk(Vec<u8>),
     Complete,
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn run_owned_operation(
+pub fn run_owned_operation(
     config: &StoreConfig,
     path: &Path,
     operation: Operation,
@@ -125,7 +125,7 @@ pub(crate) fn run_owned_operation(
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn deliver(operation: Operation, result: BlockingResult) {
+pub fn deliver(operation: Operation, result: BlockingResult) {
     match (operation, result) {
         (Operation::Load { sender }, BlockingResult::Load(result)) => {
             let _send_result = sender.send(result);
@@ -149,7 +149,7 @@ pub(crate) fn deliver(operation: Operation, result: BlockingResult) {
 }
 
 #[cfg(any(unix, windows))]
-pub(crate) fn deliver_error(operation: Operation, error: AtomicBlobStoreError) {
+pub fn deliver_error(operation: Operation, error: AtomicBlobStoreError) {
     match operation {
         Operation::Load { sender } => {
             let _ = sender.send(Err(error));

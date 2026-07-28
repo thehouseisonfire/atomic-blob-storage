@@ -4,11 +4,11 @@ pub const DOMAIN_TAG_LEN: usize = 8;
 pub const ENVELOPE_VERSION_V1: u16 = 1;
 /// Maximum length, including the leading dot, of a filename suffix.
 pub const MAX_FILENAME_SUFFIX_LEN: usize = 32;
-pub(crate) const HEADER_LEN: usize = 18;
-pub(crate) const CHECKSUM_LEN: usize = 4;
-pub(crate) const STREAM_CHUNK_SIZE: usize = 64 * 1024;
+pub const HEADER_LEN: usize = 18;
+pub const CHECKSUM_LEN: usize = 4;
+pub const STREAM_CHUNK_SIZE: usize = 64 * 1024;
 #[cfg(any(unix, windows))]
-pub(crate) const STREAM_CHANNEL_CAPACITY: usize = 2;
+pub const STREAM_CHANNEL_CAPACITY: usize = 2;
 
 /// The default maximum canonical blob payload size (64 MiB).
 pub const DEFAULT_MAX_BLOB_SIZE: u64 = 64 * 1024 * 1024;
