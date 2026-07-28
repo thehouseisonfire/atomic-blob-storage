@@ -1,0 +1,14 @@
+[package]
+name = "atomic-blob-store-consumer-tests"
+version = "0.0.0"
+publish = false
+rust-version.workspace = true
+edition.workspace = true
+repository.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+atomic-blob-store = { path = "..", features = ["tokio"] }
+tempfile = "3"
+tokio = { version = "1.40", features = ["macros", "rt"] }
