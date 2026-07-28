@@ -815,7 +815,7 @@ pub(crate) fn save_blob(
         let initial = move_file(&staging, path, MOVEFILE_WRITE_THROUGH);
         match initial {
             Ok(()) => {}
-            Err(error) if matches!(error.raw_os_error(), Some(code) if code.cast_unsigned() == ERROR_FILE_EXISTS || code.cast_unsigned() == ERROR_ALREADY_EXISTS) =>
+            Err(error) if matches!(error.raw_os_error(), Some(code) if (code as u32) == ERROR_FILE_EXISTS || (code as u32) == ERROR_ALREADY_EXISTS) =>
             {
                 move_file(
                     &staging,
@@ -904,7 +904,7 @@ pub(crate) fn save_blob_from_receiver(
         let initial = move_file(&staging, path, MOVEFILE_WRITE_THROUGH);
         match initial {
             Ok(()) => {}
-            Err(error) if matches!(error.raw_os_error(), Some(code) if code.cast_unsigned() == ERROR_FILE_EXISTS || code.cast_unsigned() == ERROR_ALREADY_EXISTS) =>
+            Err(error) if matches!(error.raw_os_error(), Some(code) if (code as u32) == ERROR_FILE_EXISTS || (code as u32) == ERROR_ALREADY_EXISTS) =>
             {
                 move_file(
                     &staging,
