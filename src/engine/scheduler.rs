@@ -1,9 +1,13 @@
+#[cfg(feature = "bench-instrumentation")]
+use super::emit_benchmark_event;
 use super::{
     Arc, AtomicBlobStoreError, CleanupReport, Completion, CoordinatorEvent, HashMap, HashSet,
     Lifecycle, MaintenanceCompletion, MaintenanceSubmission, Mutex, PendingEvent, QueuedOperation,
     Receiver, StoreConfig, VecDeque, WorkerPool, cleanup_stale_files, deliver, deliver_error,
-    emit_benchmark_event, run_owned_operation,
+    run_owned_operation,
 };
+#[cfg(all(test, any(unix, windows)))]
+use super::{StoreOperation, TestStage, hit_test_stage};
 
 #[cfg(any(unix, windows))]
 pub fn fail_queued_after_coordinator_panic(receiver: &Receiver<CoordinatorEvent>) {

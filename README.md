@@ -9,7 +9,7 @@
   <a href="https://crates.io/crates/atomic-blob-store">
     <img src="https://img.shields.io/crates/d/atomic-blob-store.svg" alt="crates.io downloads" />
   </a>
-  <img src="https://img.shields.io/badge/rustc-1.89%2B-blue" alt="rustc 1.89 or newer" />
+  <img src="https://img.shields.io/badge/rustc-1.85%2B-blue" alt="rustc 1.85 or newer" />
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT%2FApache--2.0-blue" alt="MIT OR Apache-2.0 license" /></a>
 </div>
 

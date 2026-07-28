@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-This Rust 2024 workspace targets Rust 1.89+. The public crate lives in `src/`: `lib.rs` defines the shared API and engine integration, `blocking.rs` and `tokio.rs` expose the two facades, `engine/` handles scheduling and lifecycle, and `filesystem/` contains platform backends. Unit tests are colocated in `src/tests.rs`; behavior and compatibility suites live in `tests/`, with immutable V1 samples under `tests/fixtures/v1/`. Runnable examples are in `examples/`. `benchmarks/` is a separate harness crate, while `consumer-tests/` validates the packaged crate from a downstream consumer's perspective. Format and release contracts are documented in `FORMAT.md` and `RELEASE.md`.
+This Rust 2024 workspace targets Rust 1.85+. The public crate lives in `src/`: `lib.rs` defines the shared API and engine integration, `blocking.rs` and `tokio.rs` expose the two facades, `engine/` handles scheduling and lifecycle, and `filesystem/` contains platform backends. Unit tests are colocated in `src/tests.rs`; behavior and compatibility suites live in `tests/`, with immutable V1 samples under `tests/fixtures/v1/`. Runnable examples are in `examples/`. `benchmarks/` is a separate harness crate, while `consumer-tests/` validates the packaged crate from a downstream consumer's perspective. Format and release contracts are documented in `FORMAT.md` and `RELEASE.md`.
 
 ## Build, Test, and Development Commands
 

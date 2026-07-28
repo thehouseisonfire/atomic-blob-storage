@@ -82,10 +82,17 @@ pub use error::{
     EnvelopeSection, QuarantineInfo, StoreOperation,
 };
 mod engine;
-use engine::{
-    EngineHandle, LoadStreamEndpoint, Pending, SaveStreamEndpoint, SaveStreamMessage, StoreConfig,
-    emit_benchmark_event,
-};
+#[cfg(all(test, feature = "tokio", any(unix, windows)))]
+use engine::Lifecycle;
+#[cfg(feature = "tokio")]
+use engine::Pending;
+#[cfg(any(unix, windows))]
+use engine::StoreConfig;
+#[cfg(all(feature = "bench-instrumentation", any(unix, windows)))]
+use engine::emit_benchmark_event;
+use engine::{EngineHandle, LoadStreamEndpoint, SaveStreamEndpoint, SaveStreamMessage};
+#[cfg(all(test, feature = "tokio", any(unix, windows)))]
+use engine::{TestStage, validate_maximum};
 #[cfg(any(unix, windows))]
 mod format;
 #[cfg(all(

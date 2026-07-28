@@ -1,8 +1,11 @@
+#[cfg(feature = "bench-instrumentation")]
+use super::emit_benchmark_event;
+#[cfg(all(test, any(unix, windows)))]
+use super::engine::{TestStage, hit_test_stage};
 use super::{
     AtomicBlobStoreError, BlobFormatIdentity, BlobMetadata, CHECKSUM_LEN, DOMAIN_TAG_LEN,
     EnvelopeSection, HEADER_LEN, Path, Read, Receiver, STREAM_CHUNK_SIZE, SaveStreamMessage, Seek,
-    SeekFrom, Sender, StoreConfig, StoreOperation, Write, emit_benchmark_event,
-    ensure_namespace_available, io,
+    SeekFrom, Sender, StoreConfig, StoreOperation, Write, ensure_namespace_available, io,
 };
 #[cfg(any(unix, windows))]
 #[cfg_attr(

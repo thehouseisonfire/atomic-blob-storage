@@ -1,4 +1,6 @@
-use super::{AtomicBlobStoreError, Read, Receiver, Sender};
+#[cfg(all(test, any(unix, windows)))]
+use super::{Arc, TestStage, io};
+use super::{AtomicBlobStoreError, Receiver, Sender};
 #[cfg(any(unix, windows))]
 pub type WorkerJob = Box<dyn FnOnce() + Send + 'static>;
 
@@ -84,7 +86,7 @@ impl WorkerPool {
             .map_err(|_| AtomicBlobStoreError::WorkerUnavailable)
     }
 
-    pub(crate) const fn prepare_dispatch(&self) -> Result<(), AtomicBlobStoreError> {
+    pub(crate) fn prepare_dispatch(&self) -> Result<(), AtomicBlobStoreError> {
         #[cfg(all(test, any(unix, windows)))]
         if self
             .hook

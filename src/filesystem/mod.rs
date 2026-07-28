@@ -1,7 +1,14 @@
+#[cfg(any(not(test), windows))]
+use super::envelope_parts;
 use super::{
     AtomicBlobStoreError, BlobFormatIdentity, BlobInspection, BlobState, CleanupReport, Duration,
     OsStr, Path, PathBuf, QuarantineInfo, Receiver, SaveStreamMessage, StoreConfig, StoreOperation,
-    Write, envelope_header, envelope_parts, io, write_stream_envelope,
+    envelope_header, io, write_stream_envelope,
+};
+#[cfg(all(test, any(unix, windows)))]
+use super::{
+    engine::{TestStage, hit_test_stage},
+    format,
 };
 #[cfg(windows)]
 use std::time::SystemTime;

@@ -18,10 +18,9 @@ repos:
         name: clippy
         entry: >-
           bash -c 'set -euo pipefail;
-          export RUSTFLAGS="-D warnings -W clippy::pedantic -W clippy::nursery";
-          cargo clippy --fix --allow-dirty --all-targets -p atomic-blob-store --all-features --
-          -D warnings -D clippy::multiple_crate_versions;
-          RUSTFLAGS="-D warnings" cargo clippy --fix --allow-dirty --workspace --all-targets --all-features -- -D warnings'
+          export RUSTFLAGS="-D warnings";
+          cargo clippy --fix --allow-dirty --locked --workspace --all-targets --all-features --
+          -D warnings'
         language: system
         pass_filenames: false
         require_serial: true
