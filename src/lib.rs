@@ -114,6 +114,10 @@ use filesystem::{
     cleanup_stale_files, clear_blob, ensure_namespace_available, initialize_platform, inspect_blob,
     quarantine_blob, save_blob, save_blob_from_receiver,
 };
+#[cfg(windows)]
+use filesystem::{
+    is_owned_temporary_filename, move_file, refresh_windows_clear_age, wide_path,
+};
 #[cfg(any(unix, windows))]
 #[allow(unused_imports)]
 use format::{
