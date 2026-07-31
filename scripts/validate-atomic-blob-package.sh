@@ -36,6 +36,16 @@ package_version="$(
 crate_archive="${workspace_dir}/target/package/atomic-blob-store-${package_version}.crate"
 test -f "${crate_archive}"
 
+if grep -q '^docs/' "${evidence_dir}/package-list.log"; then
+    echo "package must not contain docs/ artifacts; move images to a URL or exclude them" >&2
+    exit 1
+fi
+archive_size="$(wc -c < "${crate_archive}")"
+if ((archive_size > 524288)); then
+    echo "package archive is ${archive_size} bytes; expected at most 512 KiB" >&2
+    exit 1
+fi
+
 temporary_root="$(mktemp -d)"
 trap 'rm -rf "${temporary_root}"' EXIT
 mkdir -p "${temporary_root}/package" "${temporary_root}/blocking/src" "${temporary_root}/tokio/src"

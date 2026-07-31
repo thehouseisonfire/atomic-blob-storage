@@ -1,9 +1,9 @@
 # Changelog
 
-## [Unreleased]
-
 ## [0.1.2] - 2026-07-28
 
+- Exclude `docs/` from the published package so the crate archive stays small;
+  the README logo is served from the repository and does not render on crates.io.
 - Fix Windows-only compilation errors: import `CleanupFailure` and gate `format` module import to unix tests.
 
 ## [0.1.1] - 2026-07-28

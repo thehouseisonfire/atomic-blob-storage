@@ -30,6 +30,7 @@ repository.workspace = true
 license.workspace = true
 authors.workspace = true
 readme = "README.md"
+exclude = ["docs/"]
 
 [features]
 default = []
