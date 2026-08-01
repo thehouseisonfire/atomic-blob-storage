@@ -37,3 +37,4 @@ fi
 
 cargo publish --locked -p atomic-blob-store
 git tag -a "atomic-blob-store-$version" -m "atomic-blob-store $version"
+git push origin "atomic-blob-store-$version"
