@@ -1,7 +1,7 @@
 //! Crash-consistent keyed blob streaming on trusted local filesystems.
 //!
 //! The store accepts opaque key and payload bytes. [`BlockingAtomicBlobStore`]
-//! and the feature-gated [`tokio::AtomicBlobStore`] facade use one
+//! and the feature-gated async `tokio::AtomicBlobStore` facade use one
 //! executor-neutral engine with bounded streaming; complete load/save methods
 //! remain allocation conveniences. See the crate README for the exact format,
 //! lifecycle, cancellation behavior, and trust boundary.

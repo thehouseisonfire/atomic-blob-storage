@@ -36,6 +36,9 @@ impl<T> Future for Operation<T> {
 }
 
 /// Tokio endpoint facade for the executor-neutral atomic blob-store engine.
+///
+/// Available when the crate is built with the `tokio` feature; see
+/// [`crate::BlockingAtomicBlobStore`] for the blocking facade.
 #[derive(Clone, Debug)]
 pub struct AtomicBlobStore {
     core: EngineHandle,
