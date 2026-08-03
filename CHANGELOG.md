@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+- Split the combined license text into separate `LICENSE-MIT` and
+  `LICENSE-APACHE` files and record `thehouseisonfire <lefttolive@proton.me>`
+  as the copyright holder and crate author. The crate remains dual-licensed
+  under MIT OR Apache-2.0.
+
 ## [0.1.2] - 2026-07-28
 
 - Exclude `docs/` from the published package so the crate archive stays small;

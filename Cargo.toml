@@ -7,7 +7,7 @@ edition = "2024"
 rust-version = "1.85.0"
 repository = "https://github.com/thehouseisonfire/atomic-blob-store"
 license = "MIT OR Apache-2.0"
-authors = ["tekjar <raviteja@bytebeam.io>"]
+authors = ["thehouseisonfire <lefttolive@proton.me>"]
 
 [profile.dev]
 debug = false
